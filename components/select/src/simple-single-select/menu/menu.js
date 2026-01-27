@@ -40,9 +40,11 @@ export function Menu({
     onEndReached,
     onFilterChange,
     onFilterInputKeyDown,
+    setFocussedOptionIndex,
 }) {
     const [menuWidth, setWidth] = useState('auto')
     const dataTestPrefix = `${dataTest}-menu`
+    const [filterFocused, setFilterFocused] = useState(false)
 
     useEffect(() => {
         if (selectRef) {
@@ -53,6 +55,43 @@ export function Menu({
             return () => selectRef.removeEventListener('resize', callback)
         }
     }, [selectRef])
+
+    useEffect(() => {
+        if (hidden) {
+            return
+        }
+        const idx =
+            typeof focussedOptionIndex === 'number' ? focussedOptionIndex : 0
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const el = document.getElementById(`${comboBoxId}-${idx}`)
+                if (el) {
+                    el.focus()
+                    setFilterFocused(false)
+                }
+            })
+        })
+    }, [hidden, comboBoxId, focussedOptionIndex])
+
+    const focusOptionByIndex = (idx) => {
+        requestAnimationFrame(() => {
+            const el = document.getElementById(`${comboBoxId}-${idx}`)
+            el?.focus()
+        })
+    }
+
+    const handleFilterKeyDown = (e) => {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault()
+            if (options.length > 0) {
+                setFocussedOptionIndex?.(0)
+                focusOptionByIndex(0)
+                setFilterFocused(false)
+            }
+            return
+        }
+        onFilterInputKeyDown(e)
+    }
 
     if (hidden) {
         return null
@@ -85,7 +124,9 @@ export function Menu({
                                 placeholder={filterPlaceholder}
                                 tabIndex={tabIndex}
                                 onChange={onFilterChange}
-                                onKeyDown={onFilterInputKeyDown}
+                                onKeyDown={handleFilterKeyDown}
+                                onFocus={() => setFilterFocused(true)}
+                                onBlur={() => setFilterFocused(false)}
                             />
                         </div>
                     )}
@@ -112,6 +153,16 @@ export function Menu({
                                 onBlur={onBlur}
                                 onChange={onChange}
                                 onEndReached={onEndReached}
+                                filterable={filterable}
+                                filterValue={filterValue}
+                                filterLabel={filterLabel}
+                                filterPlaceholder={filterPlaceholder}
+                                tabIndex={tabIndex}
+                                onFilterChange={onFilterChange}
+                                onFilterInputKeyDown={onFilterInputKeyDown}
+                                filterDataTest={`${dataTestPrefix}-filter`}
+                                setFocussedOptionIndex={setFocussedOptionIndex}
+                                filterFocused={filterFocused}
                             />
                         </div>
 
@@ -196,4 +247,5 @@ Menu.propTypes = {
     onEndReached: PropTypes.func,
     onFilterChange: PropTypes.func,
     onFilterInputKeyDown: PropTypes.func,
+    setFocussedOptionIndex: PropTypes.func,
 }

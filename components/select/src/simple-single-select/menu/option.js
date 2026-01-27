@@ -70,6 +70,7 @@ export function Option({
     highlighted,
     listBoxRef,
     onBecameVisible,
+    onKeyDown,
     ...rest
 }) {
     const buttonRef = useRef()
@@ -117,6 +118,7 @@ export function Option({
                     onClick({ value, label })
                 }
             }}
+            onKeyDown={onKeyDown}
         >
             <StyleComponent
                 value={value}
@@ -158,4 +160,5 @@ Option.propTypes = {
         current: PropTypes.instanceOf(HTMLElement),
     }),
     onBecameVisible: PropTypes.func,
+    onKeyDown: PropTypes.func,
 }

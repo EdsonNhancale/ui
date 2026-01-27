@@ -13,6 +13,8 @@ export function Filter({
     value,
     onChange,
     onKeyDown,
+    onFocus,
+    onBlur,
 }) {
     return (
         <div data-test={dataTest}>
@@ -29,6 +31,8 @@ export function Filter({
                 name="filter"
                 placeholder={placeholder}
                 onKeyDown={(_, e) => onKeyDown(e)}
+                onFocus={onFocus}
+                onBlur={(_, e) => onBlur?.(e)}
             />
 
             <style jsx>{`
@@ -55,4 +59,6 @@ Filter.propTypes = {
     placeholder: PropTypes.string,
     tabIndex: PropTypes.string,
     onKeyDown: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
 }

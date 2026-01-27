@@ -260,6 +260,7 @@ export function SimpleSingleSelect({
                 onClose={closeMenu}
                 onEndReached={onEndReached}
                 onFilterChange={onFilterChange}
+                setFocussedOptionIndex={setFocussedOptionIndex}
             />
         </div>
     )
